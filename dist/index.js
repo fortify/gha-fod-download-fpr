@@ -5099,6 +5099,7 @@ function downloadFpr(authHeaders, releaseId, scanType, output, outputLocations) 
             //      Does FoD return an error, empty response, ...?
             core.info(`Downloaded ${scanType} scan results from release id ${releaseId} to ${output}`);
             outputLocations.set(scanType, output);
+            core.setOutput(`${scanType}-fpr`, output);
         })
             .catch(function (err) {
             // TODO Retry if error is caused by FoD rate limiting?
