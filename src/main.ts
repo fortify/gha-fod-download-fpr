@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import * as io from '@actions/io';
+import * as fs from 'fs-extra';
 import needle from 'needle';
 
 const AUTH_SCOPE = 'view-issues';
@@ -69,7 +69,9 @@ function getScanTypes() : string[] {
 
 function getOutput(releaseId: string, scanType: string) : string {
     const outputDir = core.getInput('outputDir', { required: true });
-    io.mkdirP(outputDir);
+    if (!fs.existsSync(outputDir)){
+        fs.mkdirSync(outputDir);
+    }
     return `${outputDir}/FoDScan-${releaseId}-${scanType}.fpr`;
 }
 

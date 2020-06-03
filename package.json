@@ -33,10 +33,11 @@
   "homepage": "https://github.com/fortify-actions/fod-download-fpr#readme",
   "dependencies": {
     "@actions/core": "^1.2.4",
-    "@actions/io": "^1.0.2",
+    "fs-extra": "^9.0.0",
     "needle": "^2.5.0"
   },
   "devDependencies": {
+    "@types/fs-extra": "^9.0.1",
     "@types/needle": "^2.0.4",
     "@types/node": "^14.0.9",
     "eslint": "^7.1.0",
