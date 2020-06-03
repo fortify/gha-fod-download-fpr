@@ -77,6 +77,7 @@ function getOutput(releaseId: string, scanType: string) : string {
 
 async function downloadFpr(authHeaders: any, releaseId: string, scanType: string, output: string, outputLocations: Map<string,string>) : Promise<void> {
     const downloadUrl = getEndpointUrlString(`/api/v3/releases/${releaseId}/fpr?scanType=${scanType}`);
+    // TODO Should we check whetehr scan type is available, or just try?
     core.info(`Downloading ${scanType} scan results from release id ${releaseId} to ${output}`);
     return await needle('get', downloadUrl, {headers: authHeaders, output: output})
         .then(function(result) { 
