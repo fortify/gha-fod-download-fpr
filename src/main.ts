@@ -75,10 +75,10 @@ function getOutput(releaseId: string, scanType: string) : string {
     return `${outputDir}/FoDScan-${releaseId}-${scanType}.fpr`;
 }
 
-function downloadFpr(authHeaders: any, releaseId: string, scanType: string, output: string, outputLocations: Map<string,string>) : void {
+async function downloadFpr(authHeaders: any, releaseId: string, scanType: string, output: string, outputLocations: Map<string,string>) : Promise<void> {
     const downloadUrl = getEndpointUrlString(`/api/v3/releases/${releaseId}/fpr?scanType=${scanType}`);
     core.info(`Downloading ${scanType} scan results from release id ${releaseId} to ${output}`);
-    needle('get', downloadUrl, {headers: authHeaders, output: output})
+    return await needle('get', downloadUrl, {headers: authHeaders, output: output})
         .then(function(result) { 
             // TODO This is being called even if scan type is not available and not downloaded
             //      Does FoD return an error, empty response, ...?
@@ -104,9 +104,8 @@ async function main() {
             const releaseId = getReleaseId();
             const scanTypes = getScanTypes();
             const outputLocations = new Map<string, string>();
-            scanTypes.forEach( scanType => downloadFpr(authHeaders, releaseId, scanType, getOutput(releaseId, scanType), outputLocations));
-            // TODO This statement is being run before the FPR file(s) have actually been downloaded
-            core.setOutput('fpr', outputLocations);
+            let promises = scanTypes.map( scanType => downloadFpr(authHeaders, releaseId, scanType, getOutput(releaseId, scanType), outputLocations));
+            Promise.all(promises).then(() => core.setOutput('fpr', outputLocations));
         })
         .catch(function(err) {
             throw err;
