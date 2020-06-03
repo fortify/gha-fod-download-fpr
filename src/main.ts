@@ -80,10 +80,13 @@ function downloadFpr(authHeaders: any, releaseId: string, scanType: string, outp
     core.info(`Downloading ${scanType} scan results from release id ${releaseId} to ${output}`);
     needle('get', downloadUrl, {headers: authHeaders, output: output})
         .then(function(result) { 
+            // TODO This is being called even if scan type is not available and not downloaded
+            //      Does FoD return an error, empty response, ...?
             core.info(`Downloaded ${scanType} scan results from release id ${releaseId} to ${output}`);
             outputLocations.set(scanType, output);
         })
         .catch(function(err) {
+            // TODO Retry if error is caused by FoD rate limiting?
             throw `Error downloading ${scanType} scan results from release id ${releaseId}: $err`; 
         });
 }
@@ -102,6 +105,7 @@ async function main() {
             const scanTypes = getScanTypes();
             const outputLocations = new Map<string, string>();
             scanTypes.forEach( scanType => downloadFpr(authHeaders, releaseId, scanType, getOutput(releaseId, scanType), outputLocations));
+            // TODO This statement is being run before the FPR file(s) have actually been downloaded
             core.setOutput('fpr', outputLocations);
         })
         .catch(function(err) {
