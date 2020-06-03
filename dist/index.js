@@ -2901,7 +2901,7 @@ function getApiBaseUrl() {
     const baseUrlString = core.getInput('base-url', { required: true });
     let baseUrl = new URL(baseUrlString);
     if (!baseUrl.hostname.startsWith('api')) {
-        baseUrl.hostname = 'api' + baseUrl.hostname;
+        baseUrl.hostname = 'api.' + baseUrl.hostname;
     }
     return baseUrl;
 }
