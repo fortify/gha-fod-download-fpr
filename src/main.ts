@@ -89,7 +89,6 @@ function downloadFpr(authHeaders: any, releaseId: string, scanType: string, outp
 async function main() {
     core.info("Running main()");
     const authUrl = getEndpointUrlString('/oauth/token');
-    const outputLocations = new Map<string, string>();
     core.info("Authenticating with FoD");
     needle('post', authUrl, getAuthPayload())
         .then(function(authResult) {
@@ -99,12 +98,13 @@ async function main() {
             };
             const releaseId = getReleaseId();
             const scanTypes = getScanTypes();
+            const outputLocations = new Map<string, string>();
             scanTypes.forEach( scanType => downloadFpr(authHeaders, releaseId, scanType, getOutput(releaseId, scanType), outputLocations));
+            core.setOutput('fpr', outputLocations);
         })
         .catch(function(err) {
             throw err;
         });
-    core.setOutput('fpr', outputLocations);
 }
 
 core.info("Calling main()");

@@ -3283,7 +3283,6 @@ function main() {
     return __awaiter(this, void 0, void 0, function* () {
         core.info("Running main()");
         const authUrl = getEndpointUrlString('/oauth/token');
-        const outputLocations = new Map();
         core.info("Authenticating with FoD");
         needle_1.default('post', authUrl, getAuthPayload())
             .then(function (authResult) {
@@ -3293,12 +3292,13 @@ function main() {
             };
             const releaseId = getReleaseId();
             const scanTypes = getScanTypes();
+            const outputLocations = new Map();
             scanTypes.forEach(scanType => downloadFpr(authHeaders, releaseId, scanType, getOutput(releaseId, scanType), outputLocations));
+            core.setOutput('fpr', outputLocations);
         })
             .catch(function (err) {
             throw err;
         });
-        core.setOutput('fpr', outputLocations);
     });
 }
 core.info("Calling main()");
