@@ -73,6 +73,7 @@ function getOutput(releaseId: string, scanType: string) : string {
 
 function downloadFpr(authHeaders: any, releaseId: string, scanType: string, output: string, outputLocations: Map<string,string>) : void {
     const downloadUrl = getEndpointUrlString(`/api/v3/releases/${releaseId}/fpr?scanType=${scanType}`);
+    core.debug(`Downloading ${scanType} scan results from release id ${releaseId} to ${output}`);
     needle('get', downloadUrl, {headers: authHeaders, output: output})
         .then(result => outputLocations.set(scanType, output) )
         .catch(reason => { throw `Error downloading ${scanType} scan results from release id ${releaseId}`; } );
@@ -81,8 +82,10 @@ function downloadFpr(authHeaders: any, releaseId: string, scanType: string, outp
 async function main() {
     const authUrl = getEndpointUrlString('/oauth/token');
     const outputLocations = new Map<string, string>();
+    core.debug("Authenticating with FoD");
     needle('post', authUrl, getAuthPayload())
         .then(function(authResult) {
+            core.debug("FoD Authentication successfull");
             const authHeaders = { 
                 'Authorization': 'Bearer '+ authResult.body.access_token
             };
@@ -91,7 +94,7 @@ async function main() {
             scanTypes.forEach( scanType => downloadFpr(authHeaders, releaseId, scanType, getOutput(releaseId, scanType), outputLocations));
         })
         .catch(function(err) {
-            // ...
+            throw err;
         });
     core.setOutput('fpr', outputLocations);
 }
