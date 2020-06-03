@@ -1,0 +1,39 @@
+name: 'Download FPR from FoD'
+description: 'Download FPR from Fortify on Demand'
+author: 'Fortify'
+inputs:
+  base-url:
+    description: 'FoD Base URL (e.g. https://ams.fortify.com)'
+    required: true
+  user:
+    description: 'FoD User Name'
+    required: false
+  password:
+    description: 'FoD Password or Access Token'
+    required: false
+  tenant:
+    description: 'FoD Tenant'
+    required: false
+  client-id:
+    description: 'FoD Client Id'
+    required: false
+  client-secret:
+    description: 'FoD Client Secret'
+    required: false
+  release-id:
+    description: 'FoD Release ID from which to download FPR file'
+    required: true
+  scanTypes:
+    description: 'FoD Scan Types for which to download FPR file(s)'
+    required: true
+    default: 'Static Dynamic' # TODO Add Mobile once supported by FoD
+  outputDir:
+    description: 'Directory to store downloaded FPR files'
+    required: true
+    default: '.'
+outputs:
+  fpr:
+    description: 'Full paths to the downloaded FPR files, indexed by scan type'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
