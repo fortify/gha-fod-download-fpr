@@ -1,4 +1,5 @@
 import * as core from '@actions/core';
+import * as io from '@actions/io';
 import needle from 'needle';
 
 const AUTH_SCOPE = 'view-issues';
@@ -67,7 +68,8 @@ function getScanTypes() : string[] {
 }
 
 function getOutput(releaseId: string, scanType: string) : string {
-    let outputDir = core.getInput('outputDir', { required: true });
+    const outputDir = core.getInput('outputDir', { required: true });
+    io.mkdirP(outputDir);
     return `${outputDir}/FoDScan-${releaseId}-${scanType}.fpr`;
 }
 
@@ -75,8 +77,13 @@ function downloadFpr(authHeaders: any, releaseId: string, scanType: string, outp
     const downloadUrl = getEndpointUrlString(`/api/v3/releases/${releaseId}/fpr?scanType=${scanType}`);
     core.info(`Downloading ${scanType} scan results from release id ${releaseId} to ${output}`);
     needle('get', downloadUrl, {headers: authHeaders, output: output})
-        .then(result => outputLocations.set(scanType, output) )
-        .catch(reason => { throw `Error downloading ${scanType} scan results from release id ${releaseId}`; } );
+        .then(function(result) { 
+            core.info(`Downloaded ${scanType} scan results from release id ${releaseId} to ${output}`);
+            outputLocations.set(scanType, output);
+        })
+        .catch(function(err) {
+            throw `Error downloading ${scanType} scan results from release id ${releaseId}: $err`; 
+        });
 }
 
 async function main() {
