@@ -2898,7 +2898,7 @@ const core = __importStar(__webpack_require__(612));
 const needle_1 = __importDefault(__webpack_require__(343));
 const AUTH_SCOPE = 'view-issues';
 function getApiBaseUrl() {
-    const baseUrlString = core.getInput('baseUrl', { required: true });
+    const baseUrlString = core.getInput('base-url', { required: true });
     let baseUrl = new URL(baseUrlString);
     if (!baseUrl.hostname.startsWith('api')) {
         baseUrl.hostname = 'api' + baseUrl.hostname;
