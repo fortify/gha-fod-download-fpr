@@ -5091,7 +5091,7 @@ function getOutput(releaseId, scanType) {
 function downloadFpr(authHeaders, releaseId, scanType, output, outputLocations) {
     return __awaiter(this, void 0, void 0, function* () {
         const downloadUrl = getEndpointUrlString(`/api/v3/releases/${releaseId}/fpr?scanType=${scanType}`);
-        // TODO Should we check whetehr scan type is available, or just try?
+        // TODO Should we check whether scan type is available, or just try?
         core.info(`Downloading ${scanType} scan results from release id ${releaseId} to ${output}`);
         return yield needle_1.default('get', downloadUrl, { headers: authHeaders, output: output })
             .then(function (result) {
