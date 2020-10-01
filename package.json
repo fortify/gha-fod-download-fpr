@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/fortify-actions/fod-download-fpr#readme",
   "dependencies": {
-    "@actions/core": "^1.2.4",
+    "@actions/core": "^1.2.6",
     "fs-extra": "^9.0.0",
     "needle": "^2.5.0"
   },
